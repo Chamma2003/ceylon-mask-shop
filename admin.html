@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard | Ceylon Mask Ambalangoda</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;800;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <!-- Admin Login Overlay -->
+    <div class="admin-login-overlay" id="admin-login-modal">
+        <div class="admin-login-card">
+            <div class="login-icon-box">
+                <i data-lucide="shield-check"></i>
+            </div>
+            <h2>Admin Authentication</h2>
+            <p>Enter your secret passcode to access the business management dashboard.</p>
+            <form id="admin-login-form">
+                <div class="form-group">
+                    <input type="password" id="admin-passcode" class="passcode-input" placeholder="••••••••" required autofocus>
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">Unlock Dashboard <i data-lucide="lock"></i></button>
+                <div id="login-error" class="form-feedback error hidden" style="margin-top: 16px;"></div>
+            </form>
+            <div style="margin-top: 24px;">
+                <a href="index.html" class="nav-link" style="font-size: 0.85rem;"><i data-lucide="arrow-left"></i> Return to Public Site</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Navigation Header -->
+    <header class="navbar scrolled" id="main-navbar">
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                <span class="logo-accent">CEYLON MASK</span><br> Ambalangoda
+            </a>
+            <nav class="nav-menu">
+                <a href="index.html" class="nav-link">Main Site</a>
+                <a href="heritage.html" class="nav-link">Heritage Page</a>
+                <a href="#" class="nav-link active">Admin Portal</a>
+            </nav>
+            <div class="nav-actions">
+                <button class="btn btn-secondary" id="logout-btn" style="padding: 6px 16px; font-size: 0.85rem;"><i data-lucide="log-out"></i> Logout</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Admin Portal Wrapper -->
+    <main class="admin-wrapper container">
+        <div class="admin-header-bar">
+            <div class="admin-title-group">
+                <span class="sub-title">Control Center</span>
+                <h1>Business Operations Dashboard</h1>
+            </div>
+            <div>
+                <button class="btn btn-primary" id="refresh-data-btn"><i data-lucide="rotate-cw"></i> Refresh Data</button>
+            </div>
+        </div>
+
+        <!-- 4 Top Metrics Cards -->
+        <div class="admin-stats-grid">
+            <div class="admin-stat-card">
+                <div class="stat-icon"><i data-lucide="inbox"></i></div>
+                <div>
+                    <div class="stat-info-num" id="stat-total-inquiries">0</div>
+                    <div class="stat-info-label">Total Inquiries</div>
+                </div>
+            </div>
+            <div class="admin-stat-card">
+                <div class="stat-icon" style="color: #f59e0b; background-color: rgba(245, 158, 11, 0.1);"><i data-lucide="clock"></i></div>
+                <div>
+                    <div class="stat-info-num" id="stat-pending-orders">0</div>
+                    <div class="stat-info-label">Pending Orders</div>
+                </div>
+            </div>
+            <div class="admin-stat-card">
+                <div class="stat-icon"><i data-lucide="package"></i></div>
+                <div>
+                    <div class="stat-info-num" id="stat-total-masks">0</div>
+                    <div class="stat-info-label">Masks in Inventory</div>
+                </div>
+            </div>
+            <div class="admin-stat-card">
+                <div class="stat-icon" style="color: #34d399; background-color: rgba(52, 211, 153, 0.1);"><i data-lucide="mail"></i></div>
+                <div>
+                    <div class="stat-info-num" id="stat-total-subscribers">0</div>
+                    <div class="stat-info-label">Newsletter Subscribers</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab Controls & Action Bar -->
+        <div class="admin-tab-nav">
+            <div class="tab-buttons">
+                <button class="admin-tab-btn active" data-tab="tab-inquiries"><i data-lucide="message-square"></i> Customer Inquiries</button>
+                <button class="admin-tab-btn" data-tab="tab-inventory"><i data-lucide="layers"></i> Mask Inventory</button>
+                <button class="admin-tab-btn" data-tab="tab-reviews"><i data-lucide="star"></i> Customer Reviews</button>
+                <button class="admin-tab-btn" data-tab="tab-subscribers"><i data-lucide="users"></i> Subscribers List</button>
+            </div>
+        </div>
+
+        <!-- TAB 1: Customer Inquiries -->
+        <div class="admin-tab-content active" id="tab-inquiries">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h3 style="font-size: 1.3rem;">Custom Orders & Messages</h3>
+                <div class="filter-controls">
+                    <button class="filter-btn active" data-status-filter="all">All</button>
+                    <button class="filter-btn" data-status-filter="pending">Pending</button>
+                    <button class="filter-btn" data-status-filter="contacted">Contacted</button>
+                    <button class="filter-btn" data-status-filter="completed">Completed</button>
+                </div>
+            </div>
+            <div class="table-responsive">
+                <table class="admin-table" id="inquiries-table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Customer</th>
+                            <th>Type</th>
+                            <th>Message</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="inquiries-tbody">
+                        <tr>
+                            <td colspan="6" style="text-align: center; color: var(--text-secondary);">Loading customer inquiries...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- TAB 2: Mask Inventory -->
+        <div class="admin-tab-content" id="tab-inventory">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h3 style="font-size: 1.3rem;">Product Catalog Management</h3>
+                <button class="btn btn-primary" id="add-mask-btn"><i data-lucide="plus"></i> Add New Mask</button>
+            </div>
+            <div class="table-responsive">
+                <table class="admin-table" id="inventory-table">
+                    <thead>
+                        <tr>
+                            <th>Image</th>
+                            <th>Mask ID</th>
+                            <th>Title</th>
+                            <th>Category</th>
+                            <th>Price</th>
+                            <th>Stock Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="inventory-tbody">
+                        <tr>
+                            <td colspan="7" style="text-align: center; color: var(--text-secondary);">Loading catalog inventory...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- TAB 3: Customer Reviews -->
+        <div class="admin-tab-content" id="tab-reviews">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h3 style="font-size: 1.3rem;">Customer Reviews Moderation</h3>
+            </div>
+            <div class="table-responsive">
+                <table class="admin-table" id="reviews-table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Reviewer</th>
+                            <th>Rating</th>
+                            <th>Product</th>
+                            <th>Comment</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="reviews-tbody">
+                        <tr>
+                            <td colspan="6" style="text-align: center; color: var(--text-secondary);">Loading customer reviews...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- TAB 4: Subscribers List -->
+        <div class="admin-tab-content" id="tab-subscribers">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h3 style="font-size: 1.3rem;">Newsletter Subscribers</h3>
+                <button class="btn btn-secondary" id="copy-subscribers-btn"><i data-lucide="copy"></i> Copy All Emails</button>
+            </div>
+            <div class="table-responsive">
+                <table class="admin-table" id="subscribers-table">
+                    <thead>
+                        <tr>
+                            <th>Subscriber Email</th>
+                            <th>Date Subscribed</th>
+                        </tr>
+                    </thead>
+                    <tbody id="subscribers-tbody">
+                        <tr>
+                            <td colspan="2" style="text-align: center; color: var(--text-secondary);">Loading subscribers list...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal for Adding / Editing Mask -->
+    <div class="modal-overlay" id="mask-edit-modal">
+        <div class="modal-card" style="max-width: 600px;">
+            <button class="modal-close-btn" id="mask-edit-close" aria-label="Close modal">
+                <i data-lucide="x"></i>
+            </button>
+            <h2 class="modal-title" id="mask-modal-title" style="margin-bottom: 24px;">Add New Mask</h2>
+            <form id="mask-edit-form">
+                <input type="hidden" id="edit-mongo-id">
+                <div class="grid grid-2-col" style="gap: 16px;">
+                    <div class="form-group">
+                        <label for="edit-mask-id">Mask Identifier (ID)</label>
+                        <input type="text" id="edit-mask-id" placeholder="Optional (e.g. gurulu, mayura)">
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-title">Product Title</label>
+                        <input type="text" id="edit-title" required placeholder="e.g. Gurulu Raksha">
+                    </div>
+                </div>
+                <div class="grid grid-2-col" style="gap: 16px;">
+                    <div class="form-group">
+                        <label for="edit-category">Category</label>
+                        <select id="edit-category" required>
+                            <option value="protection">Protection (Raksha)</option>
+                            <option value="prosperity">Prosperity</option>
+                            <option value="ritual">Ritual Dance</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-price">Formatted Price</label>
+                        <input type="text" id="edit-price" required placeholder="LKR 24,500">
+                    </div>
+                </div>
+                <div class="grid grid-2-col" style="gap: 16px;">
+                    <div class="form-group">
+                        <label for="edit-dimensions">Dimensions</label>
+                        <input type="text" id="edit-dimensions" placeholder='Optional (e.g. 18" x 12" x 6")'>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-aura">Aura / Blessing</label>
+                        <input type="text" id="edit-aura" placeholder="Optional (e.g. Wards poison, brings wealth)">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="edit-img">Image URL / Path</label>
+                    <input type="text" id="edit-img" placeholder="Optional (e.g. assets/hero_mask.png or image path)">
+                </div>
+                <div class="form-group">
+                    <label for="edit-desc">Full Description</label>
+                    <textarea id="edit-desc" rows="3" placeholder="Optional detailed folklore story..."></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">Save Product <i data-lucide="check"></i></button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Script Entry -->
+    <script src="admin.js"></script>
+</body>
+</html>
